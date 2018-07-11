@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kek</title>
+    <style>
+        #parking-matrix-block {
+            position: absolute;
+        }
+        #parking-elements {
+            position: relative;
+            margin-left: 800px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div id="parking-matrix-block">
+    <img src="parking.jpg" style="position:absolute; width: 800px;">
+</div>
+<div id="parking-elements">
+    <div id="single-lamp">
+        <img src="street-light.png" style="width: 30px;" draggable="true" id="double-lamp-1" ondragstart="drag(event)">
+    </div>
+    <div id="double-lamp">
+        <img src="lamp-post.png" style="width: 30px;" draggable="true" id="single-lamp-1" ondragstart="drag(event)">
+    </div>
+</div>
+
+<script>
+    var lampCounter = 1;
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("id", ev.target.id);
+        ev.dataTransfer.setData("parentId", $('#' + ev.target.id).parent().attr('id'));
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var id = ev.dataTransfer.getData("id");
+        var parentId = ev.dataTransfer.getData("parentId");
+        var dragObject = document.getElementById(id);
+        ev.target.appendChild(dragObject);
+        var clonnedObject = dragObject.cloneNode(true);
+        $(clonnedObject).attr('id', 'lamp' + lampCounter);
+        lampCounter++;
+        $('#' + parentId).html(clonnedObject);
+        console.log({
+            'lampType': parentId,
+            'position': $(ev.target).attr('id').split('-')[1]
+        });
+    }
+    for (var i = 0; i < 13; i++) {
+        $('#parking-matrix-block').append('<div style="width: 30px; height: 30px; border: 2px solid black;' +
+            ' position:relative; margin-left: 230px; margin-top: 0px;" ondrop="drop(event)" ondragover="allowDrop(event)" id="position-' + i + '"></div>');
+    }
+</script>
+</body>
+</html>
